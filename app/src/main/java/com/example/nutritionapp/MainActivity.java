@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView mtfat, mfats, msodium, mpotassium, mfiber, msugar, mnfacts, mfood;
+    TextView mtfat, mfats, msodium, mpotassium, mfiber, msugar, mnfacts, mfood, merror;
 
     String MyFood;
 
@@ -51,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         msugar = findViewById(R.id.msugar);
         mnfacts = findViewById(R.id.mnfacts);
         mfood = findViewById(R.id.mfood);
+        merror = findViewById(R.id.merror);
+
+        merror.setText(" ");
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -82,9 +85,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+
     public void afficher() {
         String url = "https://api.api-ninjas.com/v1/nutrition?query=" + MyFood;
-
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -93,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                             //JSONArray items = response.getJSONObject(0);
                             JSONObject item = (JSONObject) response.get(0);
                             if (item.length() > 0) {
-
                                 mfood.setText(item.getString("name"));
                                 mtfat.setText("Total fat: " + item.getString("fat_total_g") + " g");
                                 mfats.setText("Saturated fat: " + item.getString("fat_saturated_g") + " g");
@@ -106,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                                 Log.e("ApiResponse", "No data found for the item");
                             }
                         } catch (JSONException e) {
+                            merror.setText(MyFood + " is not a food item");
                             Log.e("ApiError", "JSON  error: " + e.getMessage());
                         }
                     }
